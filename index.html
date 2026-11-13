@@ -207,13 +207,13 @@ var DEFS=[
  {id:'bothback',  def:'NO ONE',  desc:'Nobody at the net to begin with — two diggers back.'}
 ];
 var SPOT={
- da:{n:'deep cross',x:0.8,y:0.8}, dl:{n:'deep line',x:0.15,y:0.8},
+ da:{n:'deep cross',x:0.76,y:0.74}, dl:{n:'deep line',x:0.2,y:0.74},
  angleUp:{n:'creeping up in the cross',x:0.72,y:0.42}, lineUp:{n:'creeping up on the line',x:0.2,y:0.44},
  daSeam:{n:'cheating toward the seam',x:0.6,y:0.74},
- daRun:{n:'still running out of the cross',x:0.56,y:0.7,fx:0.8,fy:0.8}, dlRun:{n:'still running off the line',x:0.42,y:0.7,fx:0.15,fy:0.8},
- dlWide:{n:'deep line',x:0.1,y:0.86}, daWide:{n:'deep cross',x:0.9,y:0.86},
+ daRun:{n:'still running out of the cross',x:0.54,y:0.66,fx:0.76,fy:0.74}, dlRun:{n:'still running off the line',x:0.44,y:0.66,fx:0.2,fy:0.74},
+ dlWide:{n:'deep line',x:0.22,y:0.68}, daWide:{n:'deep cross',x:0.78,y:0.68},
  upL:{n:'creeping up',x:0.28,y:0.45}, upR:{n:'creeping up',x:0.72,y:0.45},
- tightL:{n:'deep middle',x:0.36,y:0.74}, tightR:{n:'deep middle',x:0.64,y:0.74}
+ tightL:{n:'deep middle',x:0.38,y:0.7}, tightR:{n:'deep middle',x:0.62,y:0.7}
 };
 // Standard setups: the digger always takes the lane opposite the blocker; only their depth varies.
 // shots[0] = best shot; the rest also work.
@@ -225,7 +225,7 @@ var TEMPLATES=[
  {call:'peelline',  b:'peelLineDeep',  d:['da'],     shots:['pokey','seam'], note:'blocker pulled deep'},
  {call:'peelline',  b:'peelLineShort', d:['da'],     shots:['highline'], note:'blocker pulled short'},
  {call:'peelline',  b:'peelLine',      d:['daSeam'], shots:['cutty']},
- {call:'peelangle', b:'peelCrossDeep',  d:['dl'], shots:['pokey','cutty','seam'], tgt:{seam:{x:0.42,y:0.82}}, note:'blocker pulled deep'},
+ {call:'peelangle', b:'peelCrossDeep',  d:['dl'], shots:['pokey','cutty','seam'], tgt:{seam:{x:0.5,y:0.86}}, note:'blocker pulled deep'},
  {call:'peelangle', b:'peelCrossShort', d:['dl'], shots:['highangle','seam'], note:'blocker pulled short'},
  {call:'bothback',  b:null,       d:['dlWide','daWide'], shots:['seam','pokey','cutty']},
  {call:'bothback',  b:null,       d:['tightL','tightR'], shots:['pokey','cutty']},
