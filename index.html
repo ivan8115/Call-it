@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Call It — Beach Defense Read Trainer</title>
+<style>
+:root{--bg:#0e151d;--card:#17212d;--card2:#1f2b3a;--txt:#eef2f6;--muted:#93a1b2;--sand:#efd9ad;--sand2:#e3c88f;--opp:#e2483a;--you:#2f6fe8;--open:#19b45a;--bad:#e2483a;--gold:#f5b942}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--txt);font:16px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+body{padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+.wrap{max-width:520px;margin:0 auto;padding:10px 12px 24px}
+header{display:flex;align-items:center;justify-content:space-between;margin:4px 0 10px}
+h1{font-size:20px;margin:0;letter-spacing:.5px}
+h1 span{color:var(--gold)}
+nav{display:flex;gap:6px}
+nav button{background:var(--card);color:var(--muted);border:0;border-radius:999px;padding:7px 12px;font-weight:600;font-size:14px}
+nav button.on{background:var(--gold);color:#1a1300}
+.view{display:none}.view.on{display:block}
+.stats{display:flex;gap:6px;margin-bottom:8px}
+.stat{flex:1;background:var(--card);border-radius:10px;padding:6px 8px;text-align:center}
+.stat b{display:block;font-size:18px}
+.stat small{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+.courtbox{position:relative;background:var(--card);border-radius:14px;padding:6px}
+svg{display:block;width:100%;height:auto}
+.timer{height:5px;background:var(--card2);border-radius:3px;margin:8px 2px 0;overflow:hidden}
+.pl{transition:transform .45s ease-out}
+.timer i{display:block;height:100%;width:100%;background:var(--gold);transform-origin:left}
+.msg{min-height:46px;margin:8px 2px;font-size:15px}
+.msg .big{font-size:20px;font-weight:800}
+.ok{color:var(--open)}
+.tip{font-size:14px;color:#f5d48a}.no{color:var(--bad)}
+.calls{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.calls button{grid-column:span 3;font-size:15px}.calls.odd button:last-child{grid-column:1 / -1}
+.calls button,.btn{border:0;border-radius:12px;padding:14px 6px;font-weight:800;font-size:16px;letter-spacing:.5px;background:var(--card2);color:var(--txt)}
+.calls button:active,.btn:active{transform:scale(.97)}
+.calls button.right{background:var(--open);color:#fff}
+.calls button.alsook{box-shadow:inset 0 0 0 2px var(--open);color:#7fe0a6}
+.calls button.wrong{background:var(--bad);color:#fff}
+.calls button:disabled{opacity:.85}
+.row{display:flex;gap:8px;margin-top:8px}
+.row .btn{flex:1}
+.btn.go{background:var(--gold);color:#1a1300}
+.btn.yes{background:var(--open);color:#fff}
+.btn.nope{background:var(--bad);color:#fff}
+.hidden{display:none!important}
+.topbar{display:none}
+.topbar button{background:var(--card2);color:var(--txt);border:0;border-radius:999px;padding:6px 14px;font-weight:700;font-size:14px}
+body.focus header,body.focus #kindSeg,body.focus #modeSeg,body.focus .stats,body.focus .miss{display:none}
+body.focus .topbar{display:flex;justify-content:space-between;align-items:center;margin:0 0 6px;font-size:13px;color:var(--muted)}
+body.focus .wrap{height:100vh;height:calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom));display:flex;flex-direction:column;padding-top:6px;padding-bottom:6px}
+body.focus #v-train.on{flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
+body.focus .courtbox{flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
+body.focus #court{flex:1 1 auto;min-height:0;height:100%;width:100%}
+body.focus .msg{height:96px;min-height:0;overflow-y:auto;font-size:14px;margin:6px 2px}
+body.focus .msg .big{font-size:17px}
+body.focus .calls button,body.focus .btn{padding:11px 6px}
+body.focus .row{margin-top:6px}
+.seg{display:flex;background:var(--card);border-radius:10px;padding:3px;margin-bottom:8px}
+.seg button{flex:1;border:0;background:none;color:var(--muted);padding:7px;border-radius:8px;font-weight:600;font-size:14px}
+.seg button.on{background:var(--card2);color:var(--txt)}
+.seg.kind button{font-size:15px;padding:10px}.seg.kind button.on{background:var(--gold);color:#1a1300}
+.calls.three button{grid-column:span 2}
+.card{background:var(--card);border-radius:12px;padding:12px 14px;margin-bottom:10px}
+.card h3{margin:0 0 6px;font-size:16px}
+.card p{margin:6px 0;color:#cfd8e3;font-size:14.5px}
+.callrow{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-top:1px solid #263345}
+.callrow:first-of-type{border-top:0}
+.callrow .name{flex:0 0 118px;font-weight:800;color:var(--gold)}
+.callrow .d{font-size:14px;color:#cfd8e3}
+label{display:block;font-size:13px;color:var(--muted);margin:10px 0 4px}
+input[type=text]{width:100%;background:var(--card2);border:1px solid #2c3b4f;color:var(--txt);border-radius:8px;padding:9px;font-size:15px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.hint{font-size:12.5px;color:var(--muted)}
+.miss{font-size:13px;color:var(--muted);margin-top:6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>CALL <span>IT</span></h1>
+    <nav>
+      <button data-v="train" class="on">Train</button>
+      <button data-v="calls">Calls</button>
+      <button data-v="settings">Settings</button>
+    </nav>
+  </header>
+
+  <!-- TRAIN -->
+  <section id="v-train" class="view on">
+    <div class="seg kind" id="kindSeg">
+      <button data-k="defense">Setter calls</button><button data-k="shot">Hitter shots</button>
+    </div>
+    <div class="seg" id="modeSeg">
+      <button data-m="tap" class="on">Tap mode</button>
+      <button data-m="shout">Shout mode</button>
+    </div>
+    <div class="topbar"><button id="exitFocus">✕ Exit</button><span id="miniStats"></span></div>
+    <div class="stats">
+      <div class="stat"><b id="sAcc">–</b><small>Accuracy</small></div>
+      <div class="stat"><b id="sStreak">0</b><small>Streak</small></div>
+      <div class="stat"><b id="sBest">0</b><small>Best</small></div>
+      <div class="stat"><b id="sTime">–</b><small>Avg time</small></div>
+    </div>
+    <div class="courtbox">
+      <svg id="court" viewBox="0 0 300 320" preserveAspectRatio="xMidYMid meet" aria-label="Court"></svg>
+      <div class="timer"><i id="bar"></i></div>
+    </div>
+    <div class="msg" id="msg">Watch the blocker. Make the call.</div>
+    <div id="tapUI">
+      <div class="calls" id="callBtns"></div>
+    </div>
+    <div id="shoutUI" class="hidden">
+      <div class="row"><button class="btn go" id="revealBtn">Reveal</button></div>
+      <div class="row hidden" id="gradeRow">
+        <button class="btn yes" id="gotIt">I said it ✓</button>
+        <button class="btn nope" id="missed">Missed ✗</button>
+      </div>
+    </div>
+    <div class="row"><button class="btn go" id="startBtn">Start</button></div>
+    <div class="miss" id="missList"></div>
+  </section>
+
+  <!-- CALLS -->
+  <section id="v-calls" class="view">
+    <div class="card">
+      <h3>How to read it</h3>
+      <p><b>1. Eyes on the blocker first.</b> Are they staying up or pulling off? Which way? Then check: is anyone still moving?</p>
+      <p><b>2. Paint the picture.</b> Blocker stays up → "High line" / "High cross" (the side they're taking, so your hitter can go over it). Blocker leaves → "Pulling line" / "Pulling cross". Someone still moving → "Swing line" / "Swing cross" at them. Your hitter still picks the shot.</p>
+      <p><b>3. Never say "line" or "cross" alone.</b> Always pair it ("high line", "pulling cross") so your hitter knows exactly what you mean.</p>
+      <p><b>When:</b> glance after your set leaves your hands, call as the ball peaks — before your hitter leaves the ground. Repeat it if there's time: "PULLING CROSS! PULLING CROSS!"</p>
+    </div>
+    <div class="card" id="defList"></div>
+    <div class="card" id="callList"></div>
+    <div class="card">
+      <h3>What each call opens for your hitter</h3>
+      <p><b>High line</b> (blocker on line, digger deep cross) → shoot <b>high line</b> (or cutty)</p>
+      <p><b>High line</b>, digger creeping up in the cross → <b>high line</b> over the block</p>
+      <p><b>High cross</b> (blocker on cross, digger deep line) → <b>cutty</b> (or high cross)</p>
+      <p><b>High cross</b>, digger creeping up on the line → <b>high cross</b> over the block (or cutty)</p>
+      <p><b>Pulling line</b>, blocker pulled deep → <b>pokey</b> short (or seam)</p>
+      <p><b>Pulling line</b>, blocker pulled short → <b>high line</b> deep over them</p>
+      <p><b>Pulling line</b>, digger cheating to the seam → <b>cutty</b></p>
+      <p><b>Pulling cross</b>, blocker pulled deep → <b>pokey</b> short middle (or cutty, seam)</p>
+      <p><b>Pulling cross</b>, blocker pulled short → <b>high cross</b> deep over them (or seam)</p>
+      <p><b>No one</b> (both back), split wide → <b>seam</b> (or pokey, cutty)</p>
+      <p><b>No one</b> (both back), close together → <b>pokey</b> (or cutty)</p>
+      <p><b>No one</b> (both back), both crept up → <b>jumbo</b> to deep middle</p>
+      <p><b>Pick on the pulling blocker:</b> if they pull deep, go short; if they pull short, go deep.</p>
+      <p><b>Someone still moving</b> (blocker still pulling, or digger still running) → <b>Swing line / Swing cross</b> toward their side — blast it at them. This is the only call that tells your hitter what to do.</p>
+      <p class="hint">Every correct shot lands in open space — outside the reach rings and block shadow. Swings at a set defender are left out on purpose while you learn calling. The digger takes their standard lane opposite the blocker — only their depth (or a cheat toward the seam) changes. No ball blocks or fakes.</p>
+    </div>
+  </section>
+
+  <!-- SETTINGS -->
+  <section id="v-settings" class="view">
+    <div class="card">
+      <h3>Drill</h3>
+      <label>Flash the defense (then hide players)</label>
+      <div class="seg" id="flashSeg">
+        <button data-f="0">Off</button><button data-f="1500">1.5s</button><button data-f="900">0.9s</button><button data-f="500">0.5s</button>
+      </div>
+      <label>Time to make the call</label>
+      <div class="seg" id="limitSeg">
+        <button data-l="0">No limit</button><button data-l="3000">3s</button><button data-l="2000">2s</button><button data-l="1300">1.3s</button>
+      </div>
+      <label>Your hitter attacks from</label>
+      <div class="seg" id="sideSeg">
+        <button data-s="random">Random</button><button data-s="L">Left</button><button data-s="R">Right</button>
+      </div>
+      <label>After a correct tap</label>
+      <div class="seg" id="autoSeg">
+        <button data-a="1">Auto-next</button><button data-a="0">Wait for me</button>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Your group's call words</h3>
+      <p class="hint">Rename to whatever your coach uses (2 words max). Saved on this device.</p>
+      <div class="grid2" id="labelInputs"></div>
+      <div class="row"><button class="btn" id="resetLabels">Reset words</button><button class="btn" id="resetStats">Reset this mode's stats</button></div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function(){
+// ---------- Data ----------
+var SHOTS=[
+ {id:'highline',def:'HIGH LINE',desc:'Loopy shot over the block down your own line, deep.'},
+ {id:'highangle',def:'HIGH CROSS',desc:'Loopy shot over the block to the deep cross-court corner.'},
+ {id:'cutty',   def:'CUTTY',    desc:'Sharp, short cross-court cut shot.'},
+ {id:'pokey',   def:'POKEY',    desc:'Knuckle shot short — just over or behind the block.'},
+ {id:'jumbo',   def:'JUMBO',    desc:'Very high lob to the deep middle, over diggers who crept up.'},
+ {id:'seam',    def:'SEAM',     desc:'Flat, fast ball into the gap between two defenders.'},
+ {id:'swingline', def:'SWING LINE', desc:'Hard swing down the line — at a player who is still moving.'},
+ {id:'swingangle',def:'SWING CROSS',desc:'Hard swing cross-court — into open deep cross, or at a player who is still moving.'}
+];
+var TGT={swingline:{x:0.12,y:0.55},swingangle:{x:0.66,y:0.52},highline:{x:0.08,y:0.86},highangle:{x:0.88,y:0.86},cutty:{x:0.88,y:0.17},pokey:{x:0.42,y:0.15},seam:{x:0.5,y:0.8},jumbo:{x:0.5,y:0.9}};
+var LOOP={highline:1,highangle:1,jumbo:1};
+var DEFS=[
+ {id:'blockline', def:'HIGH LINE', desc:'Blocker stays up and takes the line.'},
+ {id:'blockangle',def:'HIGH CROSS',desc:'Blocker stays up and takes the cross.'},
+ {id:'peelline',  def:'PULLING LINE',  desc:'Blocker drops off the net toward the line.'},
+ {id:'peelangle', def:'PULLING CROSS', desc:'Blocker drops off the net toward the cross.'},
+ {id:'swingLcall',def:'SWING LINE', desc:'A player on the line side is still moving — blast it at them.'},
+ {id:'swingCcall',def:'SWING CROSS',desc:'A player on the cross side is still moving — blast it at them.'},
+ {id:'bothback',  def:'NO ONE',  desc:'Nobody at the net to begin with — two diggers back.'}
+];
+var SPOT={
+ da:{n:'deep cross',x:0.8,y:0.8}, dl:{n:'deep line',x:0.15,y:0.8},
+ angleUp:{n:'creeping up in the cross',x:0.72,y:0.42}, lineUp:{n:'creeping up on the line',x:0.2,y:0.44},
+ daSeam:{n:'cheating toward the seam',x:0.6,y:0.74},
+ daRun:{n:'still running out of the cross',x:0.56,y:0.7,fx:0.8,fy:0.8}, dlRun:{n:'still running off the line',x:0.42,y:0.7,fx:0.15,fy:0.8},
+ dlWide:{n:'deep line',x:0.1,y:0.86}, daWide:{n:'deep cross',x:0.9,y:0.86},
+ upL:{n:'creeping up',x:0.28,y:0.45}, upR:{n:'creeping up',x:0.72,y:0.45},
+ tightL:{n:'deep middle',x:0.36,y:0.74}, tightR:{n:'deep middle',x:0.64,y:0.74}
+};
+// Standard setups: the digger always takes the lane opposite the blocker; only their depth varies.
+// shots[0] = best shot; the rest also work.
+var TEMPLATES=[
+ {call:'blockline', b:'netLine',  d:['da'],              shots:['highline','cutty'], w:2.2},
+ {call:'blockline', b:'netLine',  d:['angleUp'],         shots:['highline'], w:1.3},
+ {call:'blockangle',b:'netAngle', d:['dl'],              shots:['cutty','highangle']},
+ {call:'blockangle',b:'netAngle', d:['lineUp'],          shots:['highangle','cutty']},
+ {call:'peelline',  b:'peelLineDeep',  d:['da'],     shots:['pokey','seam'], note:'blocker pulled deep'},
+ {call:'peelline',  b:'peelLineShort', d:['da'],     shots:['highline'], note:'blocker pulled short'},
+ {call:'peelline',  b:'peelLine',      d:['daSeam'], shots:['cutty']},
+ {call:'peelangle', b:'peelCrossDeep',  d:['dl'], shots:['pokey','cutty','seam'], tgt:{seam:{x:0.42,y:0.82}}, note:'blocker pulled deep'},
+ {call:'peelangle', b:'peelCrossShort', d:['dl'], shots:['highangle','seam'], note:'blocker pulled short'},
+ {call:'bothback',  b:null,       d:['dlWide','daWide'], shots:['seam','pokey','cutty']},
+ {call:'bothback',  b:null,       d:['tightL','tightR'], shots:['pokey','cutty']},
+ {call:'bothback',  b:null,       d:['upL','upR'],       shots:['jumbo']},
+ // Someone still moving when the hitter attacks → Swing at their side
+ {call:'swingLcall', b:'lateLine',  d:['da'],    shots:['swingline','pokey'], tgt:{swingline:{x:0.13,y:0.76}}, motion:1, note:'blocker still pulling'},
+ {call:'swingCcall', b:'lateCross', d:['dl'],    shots:['swingangle','pokey'], tgt:{swingangle:{x:0.76,y:0.74}}, motion:1, note:'blocker still pulling'},
+ {call:'swingCcall', b:'netLine',   d:['daRun'], shots:['swingangle','cutty'], tgt:{swingangle:{x:0.84,y:0.66}}, motion:1},
+ {call:'swingLcall', b:'netAngle',  d:['dlRun'], shots:['swingline'], tgt:{swingline:{x:0.12,y:0.66}}, motion:1}
+];
+var HIT={x:0.12,y:-0.25};
+var MOVE_MS=550; function slowMs(){return Math.max(2600,(cfg.limit||4000)+400)}
+
+// ---------- Storage ----------
+function load(k,d){try{var v=localStorage.getItem('callit_'+k);return v?JSON.parse(v):d}catch(e){return d}}
+function save(k,v){try{localStorage.setItem('callit_'+k,JSON.stringify(v))}catch(e){}}
+var cfg=load('cfg2',{mode:'tap',kind:'defense',flash:0,limit:3000,side:'random',auto:1});
+var labels=load('labels3',{});
+function freshStats(){return {n:0,ok:0,streak:0,best:0,tsum:0,tn:0,miss:{}}}
+var allStats=load('stats3',{defense:freshStats(),shot:freshStats()});
+function S(){return allStats[cfg.kind]}
+function LIST(){return cfg.kind==='defense'?DEFS:SHOTS}
+function find(id){return DEFS.concat(SHOTS).find(function(c){return c.id===id})}
+function L(id){var c=find(id);return (labels[id]||(c?c.def:id)).toUpperCase()}
+
+// ---------- Scenarios ----------
+function rnd(a,b){return a+Math.random()*(b-a)}
+function pick(a){return a[Math.floor(Math.random()*a.length)]}
+function side(){return cfg.side==='random'?(Math.random()<0.5?'L':'R'):cfg.side}
+function jitter(t){return {x:t.x+rnd(-0.03,0.03),y:Math.min(0.91,t.y+rnd(-0.03,0.02))}}
+function build(T){
+  var players=[],b=null;
+  if(T.b==='netLine') b={x:rnd(0.07,0.11),y:0.03,net:true};
+  if(T.b==='netAngle')b={x:rnd(0.32,0.4),y:0.03,net:true};
+  if(T.b==='peelLine')b={x:rnd(0.13,0.22),y:rnd(0.42,0.55),net:false};
+  if(T.b==='peelAngle')b={x:rnd(0.65,0.78),y:rnd(0.4,0.52),net:false};
+  if(T.b==='peelLineDeep')b={x:rnd(0.14,0.22),y:rnd(0.62,0.7),net:false};
+  if(T.b==='peelLineShort')b={x:rnd(0.14,0.22),y:rnd(0.28,0.35),net:false};
+  if(T.b==='peelCrossDeep')b={x:rnd(0.66,0.76),y:rnd(0.6,0.68),net:false};
+  if(T.b==='peelCrossShort')b={x:rnd(0.66,0.76),y:rnd(0.28,0.35),net:false};
+  if(T.b==='lateLine')b={x:rnd(0.14,0.2),y:rnd(0.5,0.58),net:false,slow:true};
+  if(T.b==='lateCross')b={x:rnd(0.68,0.76),y:rnd(0.48,0.56),net:false,slow:true};
+  if(b){b.role='B';b.sy=0.03;b.sx=b.net?b.x+rnd(0.04,0.1)*(T.b==='netLine'?1:-1):rnd(0.2,0.32);players.push(b)}
+  var defs=T.d.map(function(k){var s=SPOT[k];var p={x:s.x+rnd(-0.04,0.04),y:s.y+rnd(-0.04,0.04),role:'D',spot:s.n};if(s.fx!==undefined){p.sx=s.fx+rnd(-0.03,0.03);p.sy=s.fy+rnd(-0.03,0.03);p.slow=true}else{p.sx=p.x;p.sy=p.y}return p});
+  players=players.concat(defs);
+  var targets={};T.shots.forEach(function(id){targets[id]=jitter((T.tgt&&T.tgt[id])||TGT[id])});
+  return {note:T.note||'',players:players,blocker:b,defs:defs,call:T.call,shots:T.shots,targets:targets,side:side(),moves:!!b,motion:!!T.motion};
+}
+var lastCall=null;
+function gen(){
+  var sc;
+  if(cfg.kind==='defense'){
+    var tot=0;TEMPLATES.forEach(function(t){tot+=t.w||1});var T=TEMPLATES[0];
+    for(var tries=0;tries<20;tries++){
+      var r=Math.random()*tot;
+      for(var i=0;i<TEMPLATES.length;i++){r-=TEMPLATES[i].w||1;if(r<=0){T=TEMPLATES[i];break}}
+      if(T.call!==lastCall)break;
+    }
+    lastCall=T.call;
+    sc=build(T); sc.kind='defense'; sc.answer=T.call; sc.accept=[T.call];
+  } else {
+    var prim=SHOTS.filter(function(c){return TEMPLATES.some(function(t){return t.shots[0]===c.id})}); var sh=pick(prim).id; sc=build(pick(TEMPLATES.filter(function(t){return t.shots[0]===sh})));
+    sc.kind='shot'; sc.answer=sh; sc.accept=sc.shots.slice();
+  }
+  return sc;
+}
+
+// ---------- Drawing ----------
+var X0=30,W=240,NETY=250;
+function px(x,side){return X0+(side==='R'?1-x:x)*W}
+function py(y){return y>=0?NETY-y*W:NETY-y*W*0.55} // our side drawn compressed
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function draw(sc,opts){ // opts: show, reveal, atStart
+  var s=sc.side,h='';
+  h+='<defs><clipPath id="cc"><rect x="'+X0+'" y="'+py(1)+'" width="'+W+'" height="'+W+'"/></clipPath>'+
+     '<marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0L10,5L0,10z" fill="#19b45a"/></marker>'+
+     '<marker id="mv" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="#a12a1f"/></marker></defs>';
+  h+='<rect x="0" y="0" width="300" height="320" fill="#d8bf8a" rx="10"/>';
+  h+='<rect x="'+X0+'" y="'+py(1)+'" width="'+W+'" height="'+W+'" fill="#efd9ad" stroke="#fff" stroke-width="3"/>';
+  h+='<rect x="'+X0+'" y="'+NETY+'" width="'+W+'" height="62" fill="#e9d1a0" stroke="#fff" stroke-width="3"/>';
+  h+='<line x1="18" y1="'+NETY+'" x2="282" y2="'+NETY+'" stroke="#222" stroke-width="5"/>';
+  h+='<line x1="18" y1="'+NETY+'" x2="282" y2="'+NETY+'" stroke="#fff" stroke-width="2" stroke-dasharray="4 3"/>';
+  if(!opts.reveal)h+='<text x="150" y="'+(py(1)+16)+'" font-size="10" fill="#9a7f4d" text-anchor="middle">OPPONENT</text>';
+  // side labels from the hitter's view
+  if(!opts.reveal){
+  h+='<text x="'+px(0.03,s)+'" y="'+(py(1)+30)+'" font-size="9" fill="#b39660" text-anchor="'+(s==='L'?'start':'end')+'">LINE</text>';
+  h+='<text x="'+px(0.97,s)+'" y="'+(py(1)+30)+'" font-size="9" fill="#b39660" text-anchor="'+(s==='L'?'end':'start')+'">CROSS</text>';
+  }
+  if(opts.reveal&&sc.blocker&&sc.blocker.net){
+    var b=sc.blocker,w=0.06,hx0=px(HIT.x,s),hy0=py(HIT.y),Y=py(.03),Yb=py(1),pts=[];
+    [b.x-w,b.x+w].forEach(function(bx){var X=px(bx,s),k=(Yb-hy0)/(Y-hy0);pts.push([X,hx0+(X-hx0)*k])});
+    h+='<polygon points="'+pts[0][0]+','+Y+' '+pts[0][1]+','+Yb+' '+pts[1][1]+','+Yb+' '+pts[1][0]+','+Y+'" fill="rgba(226,72,58,.18)" clip-path="url(#cc)"/>';
+  }
+  if(opts.reveal){
+    var x1=px(HIT.x,s),y1=py(HIT.y);
+    if(sc.kind!=='defense') sc.shots.forEach(function(id,i){
+      var t=sc.targets[id],x2=px(t.x,s),y2=py(t.y),main=i===0,col=main?'#19b45a':'rgba(25,150,80,.75)';
+      h+='<circle cx="'+x2+'" cy="'+y2+'" r="'+(main?24:19)+'" fill="rgba(25,180,90,'+(main?.28:.14)+')" stroke="#19b45a" stroke-width="'+(main?2.5:1.5)+'"'+(main?'':' stroke-dasharray="4 3"')+'/>';
+      var sw=main?3:2;
+      if(LOOP[id]){
+        var mx=(x1+x2)/2,my=(y1+y2)/2,dx=x2-x1,dy=y2-y1,len=Math.hypot(dx,dy),nx=-dy/len,ny=dx/len;
+        // pick the bow (side and size) that keeps the arc farthest from every player
+        var bow0=Math.min(70,len*0.3),best=null;
+        [1,-1].forEach(function(sg){[1,0.6,1.4].forEach(function(k){
+          var b=bow0*k*sg,cx=mx+nx*b,cy=my+ny*b,md=1e9;
+          for(var t=0.15;t<=0.85;t+=0.05){var qx=(1-t)*(1-t)*x1+2*(1-t)*t*cx+t*t*x2,qy=(1-t)*(1-t)*y1+2*(1-t)*t*cy+t*t*y2;
+            sc.players.forEach(function(pl){md=Math.min(md,Math.hypot(qx-px(pl.x,s),qy-py(pl.y)))});
+            if(qx<X0+4||qx>X0+W-4||qy<py(1)+4)md=-100;}
+          var pref=((150-mx)*nx*sg>=0?3:0)-Math.abs(k-1)*2; // mild preference: bow toward mid-court, normal size
+          var score=Math.min(md,30)+pref;
+          if(!best||score>best.score)best={score:score,bow:b};
+        })});
+        var bow=best.bow;
+        h+='<path d="M'+x1+','+y1+' Q'+(mx+nx*bow)+','+(my+ny*bow)+' '+x2+','+y2+'" fill="none" stroke="'+col+'" stroke-width="'+sw+'" stroke-dasharray="6 4" marker-end="url(#ar)"/>';
+      } else {
+        h+='<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+col+'" stroke-width="'+sw+'" stroke-dasharray="6 4" marker-end="url(#ar)"/>';
+      }
+      h+='<text x="'+x2+'" y="'+(y2+4)+'" font-size="'+(main?12:10)+'" font-weight="800" fill="#0d5a2d" text-anchor="middle">'+esc(L(id))+'</text>';
+    });
+    sc.players.forEach(function(p){ if(p.sx!==p.x||p.sy!==p.y)
+      h+='<line x1="'+px(p.sx,s)+'" y1="'+py(p.sy)+'" x2="'+px(p.x,s)+'" y2="'+py(p.y)+'" stroke="#a12a1f" stroke-width="2" stroke-dasharray="3 3"'+(p.slow?' marker-end="url(#mv)"':'')+'/>'; });
+  }
+  if(opts.show||opts.reveal){
+    sc.players.forEach(function(p,i){
+      var x=opts.atStart?p.sx:p.x, y=opts.atStart?p.sy:p.y;
+      if(opts.reveal&&p.slow){x=p.sx+(p.x-p.sx)*0.55;y=p.sy+(p.y-p.sy)*0.55} // where they were when your hitter swung
+      var onNet=y<0.08;
+      h+='<g class="pl" id="pl'+i+'" style="transform:translate('+px(x,s)+'px,'+py(y)+'px)'+(p.slow&&opts.atStart?';transition:transform '+slowMs()+'ms linear':'')+'">';
+      // reach ring (~1.3 m) for anyone off the net; net blockers show their block shadow instead
+      h+='<circle class="reach" r="'+(0.16*W)+'" fill="rgba(226,72,58,.10)" stroke="rgba(226,72,58,.35)" stroke-width="1.2" stroke-dasharray="3 3" opacity="'+(onNet?0:1)+'"/>';
+      if(p.role==='B')h+='<rect class="arms" x="-21" y="-4" width="42" height="8" rx="4" fill="#a12a1f" opacity="'+(onNet?1:0)+'"/>';
+      h+='<circle r="17" fill="#e2483a" stroke="#fff" stroke-width="2.5"/><text y="5.5" font-size="15" font-weight="800" fill="#fff" text-anchor="middle">'+p.role+'</text>';
+      if(opts.reveal&&p.slow)h+='<text y="-22" font-size="9.5" font-weight="800" fill="#a12a1f" text-anchor="middle">MOVING</text>';
+      h+='</g>';
+    });
+  } else {
+    h+='<text x="150" y="140" font-size="44" font-weight="800" fill="rgba(0,0,0,.18)" text-anchor="middle">?</text>';
+  }
+  var hx=px(HIT.x,s),hy=py(HIT.y);
+  h+='<circle cx="'+hx+'" cy="'+(hy-19)+'" r="7" fill="#fff" stroke="#c9a24a" stroke-width="2"/>';
+  h+='<circle cx="'+hx+'" cy="'+hy+'" r="12" fill="#2f6fe8" stroke="#fff" stroke-width="2"/><text x="'+hx+'" y="'+(hy+4.5)+'" font-size="12" font-weight="800" fill="#fff" text-anchor="middle">H</text>';
+  var ux=px(0.62,s),uy=py(-0.36);
+  h+='<circle cx="'+ux+'" cy="'+uy+'" r="12" fill="#f5b942" stroke="#fff" stroke-width="2"/><text x="'+ux+'" y="'+(uy+4.5)+'" font-size="10" font-weight="800" fill="#1a1300" text-anchor="middle">YOU</text>';
+  document.getElementById('court').innerHTML=h;
+}
+function moveToEnd(sc){
+  sc.players.forEach(function(p,i){
+    var g=document.getElementById('pl'+i); if(!g)return;
+    g.style.transform='translate('+px(p.x,sc.side)+'px,'+py(p.y)+'px)';
+    var arms=g.querySelector('.arms'); if(arms)arms.setAttribute('opacity',p.y<0.08?1:0);
+    var rc=g.querySelector('.reach'); if(rc)rc.setAttribute('opacity',p.y<0.08?0:1);
+  });
+}
+
+// ---------- Explanation ----------
+function explain(sc){
+  var sp=sc.defs.map(function(x){return x.spot}), d=(sp.length>1&&sp[0]===sp[1])?'both '+sp[0]:sp.join(' & ');
+  var who=(sc.defs.length>1?'Diggers':'Digger')+' '+d+(sc.note?', '+sc.note:'');
+  var also=sc.shots.slice(1).map(function(id){return esc(L(id))}).join(', ');
+  if(sc.kind==='defense'){
+    var why={blockline:'Blocker stayed at the net on the line',blockangle:'Blocker stayed at the net on the cross',
+      peelline:'Blocker left the net toward the line',peelangle:'Blocker left the net toward the cross',
+      swingLcall:(sc.note?'Blocker still pulling toward the line':'Digger still running off the line'),
+      swingCcall:(sc.note?'Blocker still pulling toward the cross':'Digger still running out of the cross'),
+      bothback:'Nobody at the net'}[sc.call];
+    return why+' → <b class="ok">'+esc(L(sc.call))+'</b>';
+  }
+  var setup={blockline:'Blocker on line',blockangle:'Blocker on cross',peelline:'Blocker pulling line',peelangle:'Blocker pulling cross',bothback:'No one at the net',swingLcall:'Player still moving on the line side',swingCcall:'Player still moving on the cross side'}[sc.call];
+  return setup+' <span class="hint">('+who.toLowerCase()+')</span> → <b class="ok">'+esc(L(sc.answer))+'</b>'+(also?'<br><span class="hint">Also works: '+also+'</span>':'');
+}
+
+// ---------- Game loop ----------
+var cur=null,state='idle',t0=0,raf=0,timers=[];
+var $=function(id){return document.getElementById(id)};
+function later(fn,ms){timers.push(setTimeout(fn,ms))}
+function stopTimers(){cancelAnimationFrame(raf);timers.forEach(clearTimeout);timers=[]}
+function renderButtons(){
+  var l=LIST();
+  $('callBtns').className='calls'+(l.length%2?' odd':'');
+  $('callBtns').innerHTML=l.map(function(c){return '<button data-id="'+c.id+'">'+esc(L(c.id))+'</button>'}).join('');
+}
+function updStats(){
+  var st=S();
+  $('sAcc').textContent=st.n?Math.round(100*st.ok/st.n)+'%':'–';
+  $('sStreak').textContent=st.streak;$('sBest').textContent=st.best;
+  $('sTime').textContent=st.tn?(st.tsum/st.tn/1000).toFixed(2)+'s':'–';
+  var m=Object.keys(st.miss).filter(function(k){return st.miss[k]&&find(k)}).sort(function(a,b){return st.miss[b]-st.miss[a]}).slice(0,3);
+  $('miniStats').textContent='Streak '+st.streak+' · '+(st.n?Math.round(100*st.ok/st.n)+'%':'–');
+  $('missList').textContent=m.length?'Most missed: '+m.map(function(k){return L(k)+' ×'+st.miss[k]}).join(', '):'';
+  save('stats3',allStats);
+}
+function setBtns(dis){Array.prototype.forEach.call($('callBtns').children,function(b){b.className='';b.disabled=dis})}
+function next(){
+  document.body.classList.add('focus');
+  stopTimers();
+  cur=gen(); state='pre';
+  draw(cur,{show:true,atStart:true});
+  $('msg').innerHTML='Set\'s up… <b>read the defense</b>';
+  $('startBtn').classList.add('hidden'); setBtns(false);
+  $('revealBtn').parentNode.classList.remove('hidden'); $('gradeRow').classList.add('hidden');
+  $('bar').style.transform='scaleX(1)';
+  var delay=cur.motion?400:(cur.moves?MOVE_MS:250);
+  later(function(){ moveToEnd(cur); },60);
+  later(go,delay);
+}
+function go(){
+  state='live'; t0=performance.now();
+  $('msg').innerHTML='<b>Call it!</b>';
+  if(cfg.flash) later(function(){ if(state==='live') draw(cur,{show:false}); },cfg.flash);
+  if(cfg.limit){
+    (function tick(){
+      var f=1-(performance.now()-t0)/cfg.limit;
+      $('bar').style.transform='scaleX('+Math.max(0,f)+')';
+      if(f<=0){timeUp();return}
+      raf=requestAnimationFrame(tick);
+    })();
+  }
+}
+function timeUp(){ if(state!=='live')return; if(cfg.mode==='tap')finish(null,true); else reveal(); }
+function record(ok,ms){
+  var st=S(); st.n++;
+  if(ok){st.ok++;st.streak++;st.best=Math.max(st.best,st.streak);if(ms){st.tsum+=ms;st.tn++}}
+  else{st.streak=0;st.miss[cur.answer]=(st.miss[cur.answer]||0)+1}
+  updStats();
+}
+function finish(pick,late){
+  var early=state==='pre'; state='done'; stopTimers();
+  var ms=early?0:performance.now()-t0, ok=cur.accept.indexOf(pick)>=0;
+  draw(cur,{show:true,reveal:true});
+  Array.prototype.forEach.call($('callBtns').children,function(b){
+    b.disabled=true; var id=b.dataset.id; if(id===cur.answer||(id===pick&&ok))b.className='right'; else if(cur.accept.indexOf(id)>=0)b.className='alsook'; else if(id===pick)b.className='wrong';
+  });
+  record(ok,ok?ms:0);
+  var head=ok?'<span class="big ok">'+(ms/1000).toFixed(2)+'s ✓</span>':late?'<span class="big no">Too late</span>':'<span class="big no">✗</span>';
+  var tip='';
+  if(!ok&&cur.kind==='defense'&&pick){
+    var A=cur.answer, kind=function(id){return {blockline:'up',blockangle:'up',peelline:'pull',peelangle:'pull',swingLcall:'swing',swingCcall:'swing',bothback:'none'}[id]},
+        sideOf=function(id){return /line|Lcall/.test(id)?'line':'cross'}, call='<b>'+esc(L(A))+'</b>', t='';
+    if(kind(A)==='swing') t='Someone\'s still moving — call '+call+'.';
+    else if(kind(pick)==='swing') t='Nobody\'s moving — call '+call+', not Swing.';
+    else if(kind(A)==='none') t='Nobody\'s at the net — call '+call+'.';
+    else if(kind(pick)==='none') t='There\'s a blocker — call '+call+'.';
+    else if(kind(A)==='pull'&&kind(pick)==='up') t='Blocker left the net — call '+call+'.';
+    else if(kind(A)==='up'&&kind(pick)==='pull') t='Blocker stayed at the net — call '+call+'.';
+    else if(sideOf(A)!==sideOf(pick)) t='Other side — call '+call+'.';
+    // the reason line below already explains the miss, so no extra note
+  }
+  $('msg').innerHTML=head+tip+'<br>'+explain(cur);
+  if(ok&&cfg.auto) later(next,1800);
+  else{$('startBtn').textContent='Next';$('startBtn').classList.remove('hidden')}
+}
+function reveal(){
+  if(state!=='live'&&state!=='pre')return;
+  state='grade'; stopTimers();
+  draw(cur,{show:true,reveal:true});
+  $('msg').innerHTML=explain(cur);
+  $('revealBtn').parentNode.classList.add('hidden'); $('gradeRow').classList.remove('hidden');
+}
+function grade(ok){ if(state!=='grade')return; record(ok,0); state='done'; next(); }
+
+// ---------- Wiring ----------
+$('callBtns').addEventListener('click',function(e){var b=e.target.closest('button');if(b&&(state==='live'||state==='pre'))finish(b.dataset.id,false)});
+$('startBtn').addEventListener('click',next);
+function exitFocus(){
+  stopTimers();
+  if(state==='live'||state==='pre'||state==='grade'){state='done';$('startBtn').textContent='Resume'}
+  document.body.classList.remove('focus');
+  $('revealBtn').parentNode.classList.add('hidden');$('gradeRow').classList.add('hidden');
+  $('startBtn').classList.remove('hidden');
+}
+$('exitFocus').addEventListener('click',exitFocus);
+$('revealBtn').addEventListener('click',reveal);
+$('gotIt').addEventListener('click',function(){grade(true)});
+$('missed').addEventListener('click',function(){grade(false)});
+document.addEventListener('keydown',function(e){
+  if(e.target.tagName==='INPUT')return;
+  if(e.key==='Escape'&&document.body.classList.contains('focus')){exitFocus();return}
+  var n=parseInt(e.key,10),l=LIST();
+  if(cfg.mode==='tap'&&(state==='live'||state==='pre')&&n>=1&&n<=l.length)finish(l[n-1].id,false);
+  if(e.key===' '||e.key==='Enter'){e.preventDefault();if(state==='idle'||state==='done')next();else if(cfg.mode==='shout')reveal()}
+});
+document.querySelectorAll('nav button').forEach(function(b){b.addEventListener('click',function(){
+  document.querySelectorAll('nav button').forEach(function(x){x.classList.toggle('on',x===b)});
+  document.querySelectorAll('.view').forEach(function(v){v.classList.toggle('on',v.id==='v-'+b.dataset.v)});
+  if(b.dataset.v!=='train'&&(state==='live'||state==='pre')){stopTimers();state='done';$('startBtn').textContent='Resume';$('startBtn').classList.remove('hidden')}
+})});
+function seg(id,key,attr,num,cb){
+  var el=$(id);
+  function paint(){Array.prototype.forEach.call(el.children,function(b){b.classList.toggle('on',String(cfg[key])===b.dataset[attr])})}
+  el.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;cfg[key]=num?Number(b.dataset[attr]):b.dataset[attr];save('cfg2',cfg);paint();if(cb)cb()});
+  paint();
+}
+function reset(){
+  document.body.classList.remove('focus');
+  stopTimers();state='idle';$('startBtn').textContent='Start';$('startBtn').classList.remove('hidden');
+  $('tapUI').classList.toggle('hidden',cfg.mode!=='tap');$('shoutUI').classList.toggle('hidden',cfg.mode!=='shout');
+  $('revealBtn').parentNode.classList.add('hidden');$('gradeRow').classList.add('hidden');
+  var what=cfg.kind==='defense'?'what the <b>blocker</b> is doing':'the <b>open spot</b>';
+  $('msg').innerHTML=cfg.mode==='tap'?'Tap '+what+' before the bar runs out.':'Shout '+what+' <b>out loud</b>, then reveal and grade yourself honestly.';
+  renderButtons();updStats();
+  cur=gen();draw(cur,{show:false});
+}
+seg('modeSeg','mode','m',false,reset);seg('kindSeg','kind','k',false,reset);
+seg('flashSeg','flash','f',true);seg('limitSeg','limit','l',true);seg('sideSeg','side','s',false);seg('autoSeg','auto','a',true);
+
+function renderLabels(){
+  function inputs(list,title){return '<div style="grid-column:1/-1"><label><b>'+title+'</b></label></div>'+list.map(function(c){return '<div><label>'+c.def+'</label><input type="text" maxlength="20" data-id="'+c.id+'" value="'+esc(labels[c.id]||c.def)+'"></div>'}).join('')}
+  $('labelInputs').innerHTML=inputs(DEFS,'Defense calls')+inputs(SHOTS,'Shot calls');
+  function rows(list){return list.map(function(c){return '<div class="callrow"><div class="name">'+esc(L(c.id))+'</div><div class="d">'+c.desc+'</div></div>'}).join('')}
+  $('defList').innerHTML='<h3>Setter calls</h3>'+rows(DEFS);
+  $('callList').innerHTML='<h3>Hitter shots</h3>'+rows(SHOTS);
+  renderButtons();
+}
+$('labelInputs').addEventListener('change',function(e){
+  var i=e.target;if(!i.dataset.id)return;
+  var v=i.value.trim().split(/\s+/).slice(0,2).join(' ').toUpperCase();
+  if(v)labels[i.dataset.id]=v;else delete labels[i.dataset.id];
+  save('labels3',labels);renderLabels();updStats();
+});
+$('resetLabels').addEventListener('click',function(){labels={};save('labels3',labels);renderLabels();updStats()});
+$('resetStats').addEventListener('click',function(){allStats[cfg.kind]=freshStats();updStats()});
+
+renderLabels();reset();
+window.__gen=gen;window.__lastMotion=function(){return cur&&cur.motion};window.__cfg=cfg;
+})();
+</script>
+</body>
+</html>
