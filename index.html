@@ -158,7 +158,7 @@ input[type=text]{width:100%;background:var(--card2);border:1px solid #2c3b4f;col
   <section id="v-settings" class="view">
     <div class="card">
       <h3>Drill</h3>
-      <label>Court view (Setter calls)</label>
+      <label>Court view</label>
       <div class="seg" id="viewSeg">
         <button data-w="setter">Setter's eyes</button><button data-w="top">Top view</button>
       </div>
@@ -379,7 +379,7 @@ function drawTop(sc,opts,el,pfx){ // opts: show, reveal, atStart
   el.innerHTML=h;
 }
 // ---------- Setter's-eye view (perspective) ----------
-function setterView(){return cfg.view!=='top'&&cfg.kind==='defense'}
+function setterView(){return cfg.view!=='top'}
 var SV={W:300,H:300};
 function camFor(side){
   var hs=side==='R'?1:-1;                         // world x sign of the hitter's sideline
@@ -426,7 +426,8 @@ function posAt(p,t){
 function renderSetter(sc,o){ // o: {t, hidden, reveal}
   var s=sc.side,cam=camFor(s),h='';
   h+='<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#16202c"/><stop offset="1" stop-color="#2b3a4c"/></linearGradient>'+
-     '<marker id="smv" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0L10,5L0,10z" fill="#a12a1f"/></marker></defs>';
+     '<marker id="smv" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0L10,5L0,10z" fill="#a12a1f"/></marker>'+
+     '<marker id="sar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0L10,5L0,10z" fill="#19b45a"/></marker></defs>';
   h+='<rect x="-300" y="-100" width="900" height="500" fill="url(#sky)"/>';
   var hz=P(cam,{x:cam.c.x+cam.F.x*400,y:cam.c.y+cam.F.y*400,z:0});var hy=hz?Math.max(0,hz.y):0;
   h+='<rect x="-300" y="'+hy.toFixed(1)+'" width="900" height="'+(400-hy).toFixed(1)+'" fill="#d8bf8a"/>';
@@ -446,6 +447,9 @@ function renderSetter(sc,o){ // o: {t, hidden, reveal}
     var b=sc.blocker,w=0.06,ends=[b.x-w,b.x+w].map(function(bx){var k=(1-HIT.y)/(0.03-HIT.y);return Math.max(-0.15,Math.min(1.15,HIT.x+(bx-HIT.x)*k))});
     h+='<path d="'+pathOf(cam,[wpt(b.x-w,0.03,s),wpt(ends[0],1,s),wpt(ends[1],1,s),wpt(b.x+w,0.03,s)],true)+'" fill="rgba(226,72,58,.20)"/>';
   }
+  var showShots=o.reveal&&sc.kind==='shot';
+  if(showShots)sc.shots.forEach(function(id,i){var t=sc.targets[id],main=i===0;
+    h+='<path d="'+ringPath(cam,wpt(t.x,t.y,s),main?0.85:0.7)+'" fill="rgba(25,180,90,'+(main?.32:.16)+')" stroke="#19b45a" stroke-width="'+(main?2:1.2)+'"'+(main?'':' stroke-dasharray="4 3"')+'/>';});
   if(!o.hidden){
     sc.players.forEach(function(p,i){var q=pos[i]; if(q.y<0.08)return;
       h+='<path d="'+ringPath(cam,wpt(q.x,q.y,s),0.16*8)+'" fill="rgba(226,72,58,.13)" stroke="rgba(226,72,58,.45)" stroke-width="1" stroke-dasharray="3 3"/>';});
@@ -476,6 +480,16 @@ function renderSetter(sc,o){ // o: {t, hidden, reveal}
   h+=figure(cam,hw,'attack','#2f6fe8','H',' opacity="0.6"');
   var bp=P(cam,{x:hw.x-0.2,y:-0.1,z:3.0}),bpf=P(cam,{x:hw.x-0.2,y:-0.1,z:2.8});
   if(bp&&bpf)h+='<circle cx="'+bp.x+'" cy="'+bp.y+'" r="'+Math.max(3,(bpf.y-bp.y)*0.6)+'" fill="#fff" stroke="#c9a24a" stroke-width="1.5"/>';
+  if(showShots){
+    var C={x:hw.x-0.2,y:-0.1,z:3.0};
+    var arcH={highline:2.6,highangle:2.6,jumbo:3.6,cutty:0.45,pokey:0.35,seam:0.12,swingline:0.12,swingangle:0.12};
+    sc.shots.slice().reverse().forEach(function(id){var i=sc.shots.indexOf(id),main=i===0,t=sc.targets[id],T=wpt(t.x,t.y,s,0),hh=arcH[id]||0.6,pts=[];
+      for(var k=0;k<=24;k++){var u=k/24;pts.push({x:C.x+(T.x-C.x)*u,y:C.y+(T.y-C.y)*u,z:C.z+(T.z-C.z)*u+hh*4*u*(1-u)})}
+      h+='<path d="'+pathOf(cam,pts)+'" fill="none" stroke="'+(main?'#19b45a':'rgba(25,150,80,.8)')+'" stroke-width="'+(main?2.6:1.7)+'" stroke-dasharray="6 4" marker-end="url(#sar)"/>';
+      var lp=P(cam,{x:T.x,y:T.y,z:0.55});
+      if(lp)h+='<text x="'+Math.max(30,Math.min(270,lp.x)).toFixed(1)+'" y="'+lp.y.toFixed(1)+'" font-size="'+(main?10:8.5)+'" font-weight="800" fill="#0d5a2d" stroke="#f3e2bd" stroke-width="2.5" paint-order="stroke" text-anchor="middle">'+esc(L(id))+'</text>';
+    });
+  }
   $('court').innerHTML=h;
 }
 function setterFrame(){
@@ -596,7 +610,7 @@ function finish(pick,late){
     b.disabled=true; var id=b.dataset.id; if(id===cur.answer||(id===pick&&ok))b.className='right'; else if(cur.accept.indexOf(id)>=0)b.className='alsook'; else if(id===pick)b.className='wrong';
   });
   record(ok,ok?ms:0);
-  var head=ok?'<span class="big ok">'+(ms/1000).toFixed(2)+'s ✓</span>':late?'<span class="big no">Too late</span>':'<span class="big no">✗</span>';
+  var head=ok?'<span class="big ok">'+(ms?(ms/1000).toFixed(2)+'s ':'')+'✓</span>':late?'<span class="big no">Too late</span>':'<span class="big no">✗</span>';
   var tip='';
   if(!ok&&cur.kind==='defense'&&pick){
     var A=cur.answer, kind=function(id){return {blockline:'up',blockangle:'up',peelline:'pull',peelangle:'pull',swingLcall:'swing',swingCcall:'swing',bothback:'none'}[id]},
