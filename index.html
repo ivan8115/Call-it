@@ -383,10 +383,10 @@ function setterView(){return cfg.view!=='top'&&cfg.kind==='defense'}
 var SV={W:300,H:300};
 function camFor(side){
   var hs=side==='R'?1:-1;                         // world x sign of the hitter's sideline
-  var cam={x:-hs*0.7,y:-4.9,z:1.95};              // just behind and above the setter's spot (like a raised 'setter cam')
-  var tgt={x:hs*1.5,y:4.6,z:0.9};                // looking across the net, a touch toward the hitter
+  var cam={x:-hs*0.6,y:-3.1,z:1.85};              // just behind and above the setter's spot (like a raised 'setter cam')
+  var tgt={x:hs*1.1,y:4.8,z:0.9};                // looking across the net, a touch toward the hitter
   var F=norm(sub(tgt,cam)),Rv=norm(cross(F,{x:0,y:0,z:1})),U=cross(Rv,F);
-  return {c:cam,F:F,R:Rv,U:U,f:(SV.W/2)/Math.tan(35*Math.PI/180)};
+  return {c:cam,F:F,R:Rv,U:U,f:(SV.W/2)/Math.tan(40*Math.PI/180)};
 }
 function sub(a,b){return {x:a.x-b.x,y:a.y-b.y,z:a.z-b.z}}
 function dot(a,b){return a.x*b.x+a.y*b.y+a.z*b.z}
