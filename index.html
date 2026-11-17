@@ -25,7 +25,7 @@ nav button.on{background:var(--gold);color:#1a1300}
 .courtbox{position:relative;background:var(--card);border-radius:14px;padding:6px}
 svg{display:block;width:100%;height:auto}
 .timer{height:5px;background:var(--card2);border-radius:3px;margin:8px 2px 0;overflow:hidden}
-.pl{transition:transform .45s ease-out}
+.pl{transition:transform 1.4s ease-out}
 .timer i{display:block;height:100%;width:100%;background:var(--gold);transform-origin:left}
 .msg{min-height:46px;margin:8px 2px;font-size:15px}
 .msg .big{font-size:20px;font-weight:800}
@@ -231,7 +231,7 @@ var TEMPLATES=[
  {call:'bothback',  b:null, d:['srL','srR'], shots:['pokey','cutty'], w:1.5, why:'Nobody at the net'}
 ];
 var HIT={x:0.12,y:-0.25};
-var MOVE_MS=550; function slowMs(){return Math.max(2600,(cfg.limit||4000)+400)}
+var MOVE_MS=550, PULL_MS=1400; function slowMs(){return Math.max(2600,(cfg.limit||4000)+400)}
 
 // ---------- Storage ----------
 function load(k,d){try{var v=localStorage.getItem('callit_'+k);return v?JSON.parse(v):d}catch(e){return d}}
@@ -408,7 +408,7 @@ var anim={t0:0,raf:0,hidden:false,sc:null};
 function posAt(p,t){
   if(p.slow){var f=Math.min(1,t/slowMs());return {x:p.sx+(p.x-p.sx)*f,y:p.sy+(p.y-p.sy)*f,moving:f<1}}
   if(p.sx===p.x&&p.sy===p.y)return {x:p.x,y:p.y,moving:false};
-  var g=Math.max(0,Math.min(1,(t-60)/450)),e=1-Math.pow(1-g,3);
+  var g=Math.max(0,Math.min(1,(t-60)/PULL_MS)),e=1-Math.pow(1-g,2);
   return {x:p.sx+(p.x-p.sx)*e,y:p.sy+(p.y-p.sy)*e,moving:g>0&&g<1};
 }
 function renderSetter(sc,o){ // o: {t, hidden, reveal}
@@ -682,7 +682,7 @@ $('resetLabels').addEventListener('click',function(){labels={};save('labels3',la
 $('resetStats').addEventListener('click',function(){allStats[cfg.kind]=freshStats();updStats()});
 
 renderLabels();reset();
-window.__gen=gen;window.__lastMotion=function(){return cur&&cur.motion};window.__cfg=cfg;
+window.__gen=gen;window.__cur=function(){return cur};window.__lastMotion=function(){return cur&&cur.motion};window.__cfg=cfg;
 })();
 </script>
 </body>
