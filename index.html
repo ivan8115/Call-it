@@ -127,30 +127,22 @@ input[type=text]{width:100%;background:var(--card2);border:1px solid #2c3b4f;col
   <section id="v-calls" class="view">
     <div class="card">
       <h3>How to read it</h3>
-      <p><b>1. Eyes on the blocker first.</b> Are they staying up or pulling off? Which way? Then check: is anyone still moving?</p>
-      <p><b>2. Paint the picture.</b> Blocker stays up → "High line" / "High cross" (the side they're taking, so your hitter can go over it). Blocker leaves → "Pulling line" / "Pulling cross". Someone still moving → "Swing line" / "Swing cross" at them. Your hitter still picks the shot.</p>
-      <p><b>3. Never say "line" or "cross" alone.</b> Always pair it ("high line", "pulling cross") so your hitter knows exactly what you mean.</p>
-      <p><b>When:</b> glance after your set leaves your hands, call as the ball peaks — before your hitter leaves the ground. Repeat it if there's time: "PULLING CROSS! PULLING CROSS!"</p>
+      <p><b>1. Eyes on the blocker first.</b> Are they staying up at the net or pulling off? Which way? Then check: is anyone still moving?</p>
+      <p><b>2. Paint the picture.</b> Blocker stays up → "High line" / "High cross" (the side they're taking, so your hitter can go over it). Blocker pulls off, or anyone is still moving → "Swing line" / "Swing cross" — blast it at them. Nobody at the net → "No one". Your hitter still picks the shot.</p>
+      <p><b>3. Never say "line" or "cross" alone.</b> Always pair it ("high line", "swing cross") so your hitter knows exactly what you mean.</p>
+      <p><b>When:</b> glance after your set leaves your hands, call as the ball peaks — before your hitter leaves the ground. Repeat it if there's time: "SWING CROSS! SWING CROSS!"</p>
     </div>
     <div class="card" id="defList"></div>
     <div class="card" id="callList"></div>
     <div class="card">
       <h3>What each call opens for your hitter</h3>
       <p><b>High line</b> (blocker on line, digger deep cross) → shoot <b>high line</b> (or cutty)</p>
-      <p><b>High line</b>, digger creeping up in the cross → <b>high line</b> over the block</p>
       <p><b>High cross</b> (blocker on cross, digger deep line) → <b>cutty</b> (or high cross)</p>
-      <p><b>High cross</b>, digger creeping up on the line → <b>high cross</b> over the block (or cutty)</p>
-      <p><b>Pulling line</b>, blocker pulled deep → <b>pokey</b> short (or seam)</p>
-      <p><b>Pulling line</b>, blocker pulled short → <b>high line</b> deep over them</p>
-      <p><b>Pulling line</b>, digger cheating to the seam → <b>cutty</b></p>
-      <p><b>Pulling cross</b>, blocker pulled deep → <b>pokey</b> short middle (or cutty, seam)</p>
-      <p><b>Pulling cross</b>, blocker pulled short → <b>high cross</b> deep over them (or seam)</p>
-      <p><b>No one</b> (both back), split wide → <b>seam</b> (or pokey, cutty)</p>
-      <p><b>No one</b> (both back), close together → <b>pokey</b> (or cutty)</p>
-      <p><b>No one</b> (both back), both crept up → <b>jumbo</b> to deep middle</p>
-      <p><b>Pick on the pulling blocker:</b> if they pull deep, go short; if they pull short, go deep.</p>
-      <p><b>Someone still moving</b> (blocker still pulling, or digger still running) → <b>Swing line / Swing cross</b> toward their side — blast it at them. This is the only call that tells your hitter what to do.</p>
-      <p class="hint">Every correct shot lands in open space — outside the reach rings and block shadow. Swings at a set defender are left out on purpose while you learn calling. The digger takes their standard lane opposite the blocker — only their depth (or a cheat toward the seam) changes. No ball blocks or fakes.</p>
+      <p><b>Swing line</b> (blocker pulled toward the line) → <b>swing line</b> at them. Also open: pokey if they pulled deep, high line if they pulled short, cutty if the digger cheats to the seam.</p>
+      <p><b>Swing cross</b> (blocker pulled toward the cross) → <b>swing cross</b> at them. Also open: pokey, cutty or seam if they pulled deep; high cross or seam if they pulled short.</p>
+      <p><b>Swing line / cross</b> (digger still running) → swing at the side they're leaving.</p>
+      <p><b>No one</b> (both back in serve-receive spots) → <b>pokey</b> short (or cutty)</p>
+      <p class="hint">Defenders take their standard spots — the digger opposite the blocker, both back in serve-receive when there's no blocker. No ball blocks or fakes.</p>
     </div>
   </section>
 
@@ -196,7 +188,6 @@ var SHOTS=[
  {id:'highangle',def:'HIGH CROSS',desc:'Loopy shot over the block to the deep cross-court corner.'},
  {id:'cutty',   def:'CUTTY',    desc:'Sharp, short cross-court cut shot.'},
  {id:'pokey',   def:'POKEY',    desc:'Knuckle shot short — just over or behind the block.'},
- {id:'jumbo',   def:'JUMBO',    desc:'Very high lob to the deep middle, over diggers who crept up.'},
  {id:'seam',    def:'SEAM',     desc:'Flat, fast ball into the gap between two defenders.'},
  {id:'swingline', def:'SWING LINE', desc:'Hard swing down the line — at a player who is still moving.'},
  {id:'swingangle',def:'SWING CROSS',desc:'Hard swing cross-court — into open deep cross, or at a player who is still moving.'}
@@ -206,41 +197,38 @@ var LOOP={highline:1,highangle:1,jumbo:1};
 var DEFS=[
  {id:'blockline', def:'HIGH LINE', desc:'Blocker stays up and takes the line.'},
  {id:'blockangle',def:'HIGH CROSS',desc:'Blocker stays up and takes the cross.'},
- {id:'peelline',  def:'PULLING LINE',  desc:'Blocker drops off the net toward the line.'},
- {id:'peelangle', def:'PULLING CROSS', desc:'Blocker drops off the net toward the cross.'},
- {id:'swingLcall',def:'SWING LINE', desc:'A player on the line side is still moving — blast it at them.'},
- {id:'swingCcall',def:'SWING CROSS',desc:'A player on the cross side is still moving — blast it at them.'},
+ {id:'swingLcall',def:'SWING LINE', desc:'Blocker pulls toward the line, or anyone on the line side is still moving — blast it at them.'},
+ {id:'swingCcall',def:'SWING CROSS',desc:'Blocker pulls toward the cross, or anyone on the cross side is still moving — blast it at them.'},
  {id:'bothback',  def:'NO ONE',  desc:'Nobody at the net to begin with — two diggers back.'}
 ];
 var SPOT={
  da:{n:'deep cross',x:0.76,y:0.74}, dl:{n:'deep line',x:0.2,y:0.74},
- angleUp:{n:'creeping up in the cross',x:0.72,y:0.42}, lineUp:{n:'creeping up on the line',x:0.2,y:0.44},
+ 
  daSeam:{n:'cheating toward the seam',x:0.6,y:0.74},
  daRun:{n:'still running out of the cross',x:0.54,y:0.66,fx:0.76,fy:0.74}, dlRun:{n:'still running off the line',x:0.44,y:0.66,fx:0.2,fy:0.74},
- dlWide:{n:'deep line',x:0.22,y:0.68}, daWide:{n:'deep cross',x:0.78,y:0.68},
- upL:{n:'creeping up',x:0.28,y:0.45}, upR:{n:'creeping up',x:0.72,y:0.45},
- tightL:{n:'deep middle',x:0.38,y:0.7}, tightR:{n:'deep middle',x:0.62,y:0.7}
+ srL:{n:'serve-receive spot',x:0.27,y:0.66}, srR:{n:'serve-receive spot',x:0.73,y:0.66},
+ 
+ 
 };
 // Standard setups: the digger always takes the lane opposite the blocker; only their depth varies.
 // shots[0] = best shot; the rest also work.
 var TEMPLATES=[
- {call:'blockline', b:'netLine',  d:['da'],              shots:['highline','cutty'], w:2.2},
- {call:'blockline', b:'netLine',  d:['angleUp'],         shots:['highline'], w:1.3},
- {call:'blockangle',b:'netAngle', d:['dl'],              shots:['cutty','highangle']},
- {call:'blockangle',b:'netAngle', d:['lineUp'],          shots:['highangle','cutty']},
- {call:'peelline',  b:'peelLineDeep',  d:['da'],     shots:['pokey','seam'], note:'blocker pulled deep'},
- {call:'peelline',  b:'peelLineShort', d:['da'],     shots:['highline'], note:'blocker pulled short'},
- {call:'peelline',  b:'peelLine',      d:['daSeam'], shots:['cutty']},
- {call:'peelangle', b:'peelCrossDeep',  d:['dl'], shots:['pokey','cutty','seam'], tgt:{seam:{x:0.5,y:0.86}}, note:'blocker pulled deep'},
- {call:'peelangle', b:'peelCrossShort', d:['dl'], shots:['highangle','seam'], note:'blocker pulled short'},
- {call:'bothback',  b:null,       d:['dlWide','daWide'], shots:['seam','pokey','cutty']},
- {call:'bothback',  b:null,       d:['tightL','tightR'], shots:['pokey','cutty']},
- {call:'bothback',  b:null,       d:['upL','upR'],       shots:['jumbo']},
- // Someone still moving when the hitter attacks → Swing at their side
- {call:'swingLcall', b:'lateLine',  d:['da'],    shots:['swingline','pokey'], tgt:{swingline:{x:0.13,y:0.76}}, motion:1, note:'blocker still pulling'},
- {call:'swingCcall', b:'lateCross', d:['dl'],    shots:['swingangle','pokey'], tgt:{swingangle:{x:0.76,y:0.74}}, motion:1, note:'blocker still pulling'},
- {call:'swingCcall', b:'netLine',   d:['daRun'], shots:['swingangle','cutty'], tgt:{swingangle:{x:0.84,y:0.66}}, motion:1},
- {call:'swingLcall', b:'netAngle',  d:['dlRun'], shots:['swingline'], tgt:{swingline:{x:0.12,y:0.66}}, motion:1}
+ // Blocker stays up
+ {call:'blockline', b:'netLine',  d:['da'], shots:['highline','cutty'], w:3, why:'Blocker stayed at the net on the line'},
+ {call:'blockangle',b:'netAngle', d:['dl'], shots:['cutty','highangle'], w:1.6, why:'Blocker stayed at the net on the cross'},
+ // Blocker pulls off the net → Swing at them (coach: blast the pulling blocker)
+ {call:'swingLcall', b:'peelLineDeep',  d:['da'],     shots:['swingline','pokey','seam'], tgt:{swingline:{x:0.12,y:0.5}}, w:0.45, note:'blocker pulled deep', why:'Blocker pulled off the net toward the line'},
+ {call:'swingLcall', b:'peelLineShort', d:['da'],     shots:['swingline','highline'], tgt:{swingline:{x:0.12,y:0.56}}, w:0.45, note:'blocker pulled short', why:'Blocker pulled off the net toward the line'},
+ {call:'swingLcall', b:'peelLine',      d:['daSeam'], shots:['swingline','cutty'], tgt:{swingline:{x:0.12,y:0.66}}, w:0.45, why:'Blocker pulled off the net toward the line'},
+ {call:'swingCcall', b:'peelCrossDeep',  d:['dl'], shots:['swingangle','pokey','cutty','seam'], tgt:{swingangle:{x:0.74,y:0.48},seam:{x:0.5,y:0.86}}, w:0.6, note:'blocker pulled deep', why:'Blocker pulled off the net toward the cross'},
+ {call:'swingCcall', b:'peelCrossShort', d:['dl'], shots:['swingangle','highangle','seam'], tgt:{swingangle:{x:0.78,y:0.56}}, w:0.6, note:'blocker pulled short', why:'Blocker pulled off the net toward the cross'},
+ // Someone still moving when the hitter attacks → Swing at them
+ {call:'swingLcall', b:'lateLine',  d:['da'],    shots:['swingline','pokey'], tgt:{swingline:{x:0.13,y:0.76}}, motion:1, w:0.35, note:'blocker still pulling', why:'Blocker still pulling toward the line'},
+ {call:'swingCcall', b:'lateCross', d:['dl'],    shots:['swingangle','pokey'], tgt:{swingangle:{x:0.76,y:0.74}}, motion:1, w:0.35, note:'blocker still pulling', why:'Blocker still pulling toward the cross'},
+ {call:'swingCcall', b:'netLine',   d:['daRun'], shots:['swingangle','cutty'], tgt:{swingangle:{x:0.84,y:0.66}}, motion:1, w:0.35, why:'Digger still running out of the cross'},
+ {call:'swingLcall', b:'netAngle',  d:['dlRun'], shots:['swingline'], tgt:{swingline:{x:0.12,y:0.66}}, motion:1, w:0.35, why:'Digger still running off the line'},
+ // Nobody at the net: both back in standard serve-receive spots
+ {call:'bothback',  b:null, d:['srL','srR'], shots:['pokey','cutty'], w:1.5, why:'Nobody at the net'}
 ];
 var HIT={x:0.12,y:-0.25};
 var MOVE_MS=550; function slowMs(){return Math.max(2600,(cfg.limit||4000)+400)}
@@ -279,7 +267,7 @@ function build(T){
   var defs=T.d.map(function(k){var s=SPOT[k];var p={x:s.x+rnd(-0.04,0.04),y:s.y+rnd(-0.04,0.04),role:'D',spot:s.n};if(s.fx!==undefined){p.sx=s.fx+rnd(-0.03,0.03);p.sy=s.fy+rnd(-0.03,0.03);p.slow=true}else{p.sx=p.x;p.sy=p.y}return p});
   players=players.concat(defs);
   var targets={};T.shots.forEach(function(id){targets[id]=jitter((T.tgt&&T.tgt[id])||TGT[id])});
-  return {note:T.note||'',players:players,blocker:b,defs:defs,call:T.call,shots:T.shots,targets:targets,side:side(),moves:!!b,motion:!!T.motion};
+  return {why:T.why||'',note:T.note||'',players:players,blocker:b,defs:defs,call:T.call,shots:T.shots,targets:targets,side:side(),moves:!!b,motion:!!T.motion};
 }
 var lastCall=null;
 function gen(){
@@ -537,15 +525,9 @@ function explain(sc){
   var who=(sc.defs.length>1?'Diggers':'Digger')+' '+d+(sc.note?', '+sc.note:'');
   var also=sc.shots.slice(1).map(function(id){return esc(L(id))}).join(', ');
   if(sc.kind==='defense'){
-    var why={blockline:'Blocker stayed at the net on the line',blockangle:'Blocker stayed at the net on the cross',
-      peelline:'Blocker left the net toward the line',peelangle:'Blocker left the net toward the cross',
-      swingLcall:(sc.note?'Blocker still pulling toward the line':'Digger still running off the line'),
-      swingCcall:(sc.note?'Blocker still pulling toward the cross':'Digger still running out of the cross'),
-      bothback:'Nobody at the net'}[sc.call];
-    return why+' → <b class="ok">'+esc(L(sc.call))+'</b>';
+    return sc.why+' → <b class="ok">'+esc(L(sc.call))+'</b>';
   }
-  var setup={blockline:'Blocker on line',blockangle:'Blocker on cross',peelline:'Blocker pulling line',peelangle:'Blocker pulling cross',bothback:'No one at the net',swingLcall:'Player still moving on the line side',swingCcall:'Player still moving on the cross side'}[sc.call];
-  return setup+' <span class="hint">('+who.toLowerCase()+')</span> → <b class="ok">'+esc(L(sc.answer))+'</b>'+(also?'<br><span class="hint">Also works: '+also+'</span>':'');
+  return sc.why+' <span class="hint">('+who.toLowerCase()+')</span> → <b class="ok">'+esc(L(sc.answer))+'</b>'+(also?'<br><span class="hint">Also works: '+also+'</span>':'');
 }
 
 // ---------- Game loop ----------
